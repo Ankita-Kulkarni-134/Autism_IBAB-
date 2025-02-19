@@ -159,13 +159,100 @@ def check_performance (y_val , y_pred):
     print(f"Mean Absolute Error (MAE): {mae}")
     print(f"R-squared (R²): {r2}")
 
-def cross_validation(x,y,num_fold  ):
+def cross_validation(x,y,num_fold):
     kf = KFold(n_splits = num_fold , shuffle=True , random_state=42 )
     # x, y = x.dropna(), y.loc[x.index]
     model = LinearRegression()
     cross_val_results = cross_val_score(model , x , y , cv=kf , scoring = 'r2')
     print("Cross-Validation Results (r2 Scores) : " , cross_val_results)
     print("Mean R2 Score : " , cross_val_results.mean() )
+
+def cross_val_defined(x_train , y_train):
+    kf = KFold(n_splits=10, shuffle=True, random_state=42)
+
+    # initialise the list to store the performance
+    all_mse = []
+    all_mae = []
+    all_r2 = []
+
+    # defining the fold
+    for train_index, test_index in kf.split(x_train):
+        x_train_val_fold, x_val_fold = x_train.iloc[train_index], x_train.iloc[test_index]
+        y_train_val_fold, y_val_fold = y_train.iloc[train_index], y_train.iloc[test_index]
+
+        # scaling
+        sk = StandardScaler()
+        sk_x_train_val_fold = sk.fit_transform(x_train_val_fold)
+        sk_x_val_fold = sk.transform(x_val_fold)
+
+        # fit the model
+        regressor = LinearRegression()
+        regressor.fit(sk_x_train_val_fold, y_train_val_fold)
+
+        # make the predictions
+        y_pred_fold= regressor.predict(sk_x_val_fold)
+
+        # check performance
+        mse = mean_squared_error(y_val_fold, y_pred_fold)
+        mae = mean_absolute_error(y_val_fold, y_pred_fold)
+        r2 = r2_score(y_val_fold, y_pred_fold)
+
+        # append the performance
+        all_mse.append(mse)
+        all_mae.append(mae)
+        all_r2.append(r2)
+
+    #printing the lists of the values are folds
+    print('all_mse', all_mse)
+    print('all_mae', all_mae)
+    print('all_r2', all_r2)
+    # take the average of performance
+    avg_mse = np.mean(all_mse)
+    avg_mae = np.mean(all_mae)
+    avg_r2 = np.mean(all_r2)
+    print('avg_mse' , avg_mse)
+    print('avg_mae', avg_mae)
+    print('avg_r2', avg_r2)
+
+    return all_mse , all_mae , all_r2
+
+
+# def plot_cross_val(all_mse , all_mae , all_r2):
+#     import matplotlib.pyplot as plt
+
+def plot_cross_val_metrics(all_mse, all_mae, all_r2):
+    folds = range(1, len(all_mse) + 1)
+
+    # Create subplots
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+    # Plot MSE
+    axes[0].plot(folds, all_mse, marker='o', linestyle='-', color='r', label="MSE")
+    axes[0].set_xlabel("Fold Number")
+    axes[0].set_ylabel("Mean Squared Error")
+    axes[0].set_title("MSE per Fold")
+    axes[0].grid(True)
+    axes[0].legend()
+
+    # Plot MAE
+    axes[1].plot(folds, all_mae, marker='s', linestyle='-', color='g', label="MAE")
+    axes[1].set_xlabel("Fold Number")
+    axes[1].set_ylabel("Mean Absolute Error")
+    axes[1].set_title("MAE per Fold")
+    axes[1].grid(True)
+    axes[1].legend()
+
+    # Plot R2 Score
+    axes[2].plot(folds, all_r2, marker='^', linestyle='-', color='b', label="R² Score")
+    axes[2].set_xlabel("Fold Number")
+    axes[2].set_ylabel("R² Score")
+    axes[2].set_title("R² Score per Fold")
+    axes[2].grid(True)
+    axes[2].legend()
+
+    # Adjust layout and show plot
+    plt.tight_layout()
+    plt.show()
 
 
 def main():
@@ -206,8 +293,11 @@ def main():
     visualize_line(y_val , y_pred)
 
     #checking the performance
+    cross_val_defined(x_train, y_train)
     check_performance(y_val, y_pred)
-    cross_validation(sk_x_train_val , y_train_val, 10)
+    cross_validation(sk_x_train_val, y_train_val, 10)
+    all_mse , all_mae , all_r2 = cross_val_defined(x_train, y_train)
+    plot_cross_val_metrics(all_mse, all_mae, all_r2)
     histogram(df)
     boxplot(df)
     plt.close()
