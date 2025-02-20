@@ -2,9 +2,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler , OneHotEncoder , LabelEncoder  , OrdinalEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score
+from sklearn.metrics import  accuracy_score
 from sklearn.model_selection import KFold, cross_val_score
 
 
