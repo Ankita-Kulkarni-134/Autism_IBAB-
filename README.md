@@ -4,28 +4,43 @@ This repository aims to build machine learning models to predict Autism using co
 
 Autism_IBAB/
 ├── genome_analysis/
+
 │ ├── bam_download.py # Script for downloading mapped BAM files
+
 │ ├── contig_ploidy_priors.py # Script to create contig ploidy priors
+
 │ ├── fastq.py # Downloading FASTQ files using SRA Toolkit
+
 │ ├── fastq_analysis.py # Analyzing FASTQ sequences
+
 │ ├── merged_bed_files.sh # Bash script to merge BED files
+
 │ ├── parallel_fastqc.py # Parallel processing for FastQC
+
 │ ├── remove_duplicates.py # Script to remove duplicate samples
+
 │ └── README.md # Documentation for genome analysis
 
+
 ├── machine_learning/
+
 │ ├── Linear_regression_Theory_pipeline.pdf # Theoretical pipeline for linear regression
+
 │ ├── Linear_regression_script.py # Implementation of linear regression
+
 │ ├── Logistic_reg.py # Logistic regression implementation
+
 │ ├── cross_validation/ # Manual cross-validation implementation
+
 │ └── README.md # Documentation for machine learning
 
+
 ├── python_tasks/
+
 │ ├── tasks/ # Python exercises and scripts for practice
+
 │ └── README.md # Documentation for Python utilities
 
-├── requirements.txt # List of required packages
-└── README.md # Main project documentation
 
 ---
 
